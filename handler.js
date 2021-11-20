@@ -68,7 +68,7 @@ module.exports = (resource, isWs) => async (req, res, isQuery) => {
     const result = await endpoint(params);
 
     if (result?.error) {
-      return res.status(result.error.code).send(result.error);
+      return res.status(result.error.code).end(result.error);
     }
 
     // Respond with the result
