@@ -23,6 +23,7 @@ module.exports = (resource, isWs) => async (req, res, isQuery) => {
       endpoint = resource[method];
 
       // Only handle for the provided resource
+      // TODO: Prevent `handler` from trying to handle every request
 
       if (!endpoint) return;
 
@@ -68,7 +69,7 @@ module.exports = (resource, isWs) => async (req, res, isQuery) => {
     const result = await endpoint(params);
 
     if (result?.error) {
-      return res.status(result.error.code).end(result.error);
+      return res.status(result.error.code).end();
     }
 
     // Respond with the result
