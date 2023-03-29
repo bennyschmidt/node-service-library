@@ -120,7 +120,7 @@ Take the following data `{ name: "Bob Smith" }`. Imagine a sudden requirement to
     
 ### Scalability
 
-When a service gets too busy, large, or concerned with different things, it might be time to split it into multiple services. You can use [node-service-core](https://github.com/bennyschmidt/node-service-core) to manage multiple HTTP and WS services (see [README.md](https://github.com/bennyschmidt/node-service-core/blob/master/README.md) for instructions). Think of `node-service-core` as the grown-up version of the "`server.js`" mentioned above, operating as the lightweight core of the overall backend application - rather than as a server monolith - orchestrating the different `HTTP` and `WS` components (which can each be scale "out", infinitely).
+When a service gets too busy, large, or concerned with different things, it might be time to split it into multiple services. You can use [node-service-core](https://github.com/bennyschmidt/node-service-core) to manage multiple HTTP and WS services (see [README.md](https://github.com/bennyschmidt/node-service-core/blob/master/README.md) for instructions). Think of `node-service-core` as the grown-up version of the "`server.js`" mentioned above, operating as the lightweight core of the overall backend application - rather than as a server monolith - orchestrating the different `HTTP` and `WS` components (which can each scale "out", infinitely).
 
 In most cases, you will only need 1 instance of `node-service-core`, acting as an API gateway, load balancer, and orchestrator of child services, scaling "up" only as needed using your favorite cloud platform like EC2 (AWS), or Google Compute Engine (GCP); or even hosting on-prem on a physical server. 
 
