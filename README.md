@@ -8,7 +8,7 @@ Your Node.js backend could be a simple `server.js` with a bunch of handlers down
 
 But at scale, you often need to split out backend functionality to separate services, or even individual functions, in order to scale each part efficiently.
 
-[`node-service-library`](https://github.com/bennyschmidt/node-service-library) gives you a common interface for building such services. 
+`node-service-library` gives you a common interface for building such services. 
 
 It includes basic request validation, error handling, and a novel feature called "implicit responses" whereby `return` values of API endpoints can optionally be the HTTP response to a request - closing the development gap in client/server API applications, making it easier to build focusing only on FE/BE components.
 
