@@ -45,13 +45,15 @@ Not all methods are supported:
 
 - `OPTIONS`: Currently not supported, but will likely be implemented in [`node-service-core`](https://github.com/bennyschmidt/node-service-core) to provide clients with information about what requests are allowed.
 
-- `TRACE`: `TRACE` requests were designed for diagnostics and debugging. It's not supported because they can be exploited to carry out DDoS attacks like the ["HTTP TRACE Flood"]() attack, where:
+- `TRACE`: `TRACE` requests were designed for diagnostics and debugging. It's not supported because they can be exploited to carry out DDoS attacks like the "HTTP TRACE Flood" attack, where:
 
 > An HTTP TRACE Flood consists of TRACE requests. Unlike other HTTP floods that may include other request methods such as POST, PUT, GET, etc.
 >
 > When the server’s limits of concurrent connections are reached, the server can no longer respond to legitimate requests from other clients attempting to TRACE, causing a denial of service.
 >
 > HTTP TRACE flood attacks use standard URL requests, hence it may be quite challenging to differentiate from valid traffic. Traditional rate-based volumetric detection is ineffective in detecting HTTP TRACE flood attacks since traffic volume in HTTP TRACE floods is often under detection thresholds.
+>
+> https://kb.mazebolt.com/knowledgebase/http-trace-flood
 
 - `PATCH`: `PATCH` requests are not supported (while `PUT` is) for data integrity reasons. In today's world, with JSON being the primary format, the rise of GraphQL APIs & NoSQL databases, and similarly structured blockchains, it's not possible to manage complex database re-structuring without something like a schema migration: 
 
@@ -59,7 +61,7 @@ Take the following data `{ name: "Bob Smith" }`. Imagine a sudden requirement to
 
 #### Folder structure similar to Next.js
 
-API endpoints are defined in an `api/` directory as in: `src/services/{service}/api/{endpoint}.js`. The folder structure is very similar to [Next.js](https://github.com/vercel/next.js/) `pages/api` - so similar that I was able to port [this app](https://github.com/bennyschmidt/reverse/) out of a Next.js API over to [`node-web-framework`](https://github.com/bennyschmidt/node-web-framework) (which uses this library for APIs) in about 20 minutes.
+API endpoints are defined in an `api/` directory as in: `src/services/{service}/api/{endpoint}.js`. The folder structure is very similar to [Next.js](https://github.com/vercel/next.js/) `pages/api`.
 
 ### Usage
 
@@ -93,7 +95,30 @@ module.exports = () => ({
 });
 ```
 
+The functions within `api/` are exposed as API endpoints, and lifecycle methods are bound for each HTTP method. You could now call `await onHttpGet(req, res)` in the backend as some event-driven lifecycle method, or from a client you could `await fetch("/hello")` and receive identical responses.
+
 ### Scalability
 
+When a service gets too busy, large, or concerned with different things, it might be time to split it into multiple services. You can use [node-service-core](https://github.com/bennyschmidt/node-service-core) to manage multiple HTTP and WS services (see [README.md](https://github.com/bennyschmidt/node-service-core/blob/master/README.md) for instructions). Think of `node-service-core` as the grown-up version of the "`server.js`" mentioned above - operating as the core of the backend application, orchestrating the different `HTTP` and `WS` components created using this library.
+
+In most cases, you will only need 1 instance of `node-service-core`, acting as an API gateway, load balancer, and orchestrator of the child services, scaling "up" only as needed using cloud platforms like EC2 (AWS), or Google Compute Engine (GCP); or even hosting on-prem on a physical server. But at extreme scales, for example if you need to receive hundreds of millions of requests per day from all over the world, you can also scale "out" the core instance, run them in evenly geolocated data centers, and share state data between cores with an extremely fast-access (~4k reads/writes per second) JSON persistence service [dss](https://github.com/exactchange/dss) which uses a common interface with your other services, as it is also [built with `node-service-library`](https://github.com/exactchange/dss/blob/main/index.js).
 
 ### Components
+
+`HTTP`: Represents an HTTP service.
+  - `{ GET, POST, PUT, DELETE }` declarative configuration
+  - Lifecycle methods:
+    - `onHttpGet` 
+    - `onHttpPost`
+    - `onHttpPut`
+    - `onHttpDelete`
+    - `onHttpSearch // SEARCH is a GET with a query`
+    
+`WS`: Represents a WS service.
+  - `{ REQUEST, LIFECYCLE }` declarative configuration
+  - Lifecycle methods:
+    - `onWsReady` 
+    - `onWsConnect`
+    - `onWsDisconnect`
+    - `onWsRequest`
+    
