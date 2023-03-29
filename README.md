@@ -2,7 +2,7 @@
 
 Modular HTTP/WS service wrappers for Node. 
 
-### Why not just use Express?
+## Why not just use Express?
 
 Your Node.js backend could be a simple `server.js` with a bunch of handlers down the file.
 
@@ -12,7 +12,7 @@ But at scale, you often need to split out backend functionality to separate serv
 
 It includes basic request validation, error handling, and a novel feature called "implicit responses" whereby `return` values of API endpoints can optionally be the HTTP response to a request - closing the development gap in client/server API applications, making it easier to build focusing only on FE/BE components.
 
-### Is it hard to learn?
+## Is it hard to learn?
 
 #### Component-based
 
@@ -33,7 +33,7 @@ module.exports = http({
 });
 ```
 
-### Components
+#### Components
 
 `HTTP`: An HTTP service.
   - `{ GET, POST, PUT, DELETE }` declarative configuration
@@ -56,7 +56,7 @@ module.exports = http({
 
 API endpoints are defined in an `api/` directory as in: `src/services/{service}/api/{endpoint}.js`. The folder structure is very similar to [Next.js](https://github.com/vercel/next.js/) `pages/api`.
 
-### Usage
+## Usage
 
 Define a new service with an endpoint like this:
 
@@ -90,7 +90,7 @@ module.exports = () => ({
 
 The functions within `api/` are exposed as API endpoints, and lifecycle methods are bound for each HTTP method. You could now call `await onHttpGet(req, res)` in the backend as some event-driven lifecycle method, or from a client you could `await fetch("/hello")` and receive identical responses.
 
-#### REST APIs
+## REST APIs
 
 API design closely follows REST (with `GET`, `POST`, `PUT`, & `DELETE` methods).
 
@@ -118,7 +118,7 @@ Not all methods are supported:
 
 Take the following data `{ name: "Bob Smith" }`. Imagine a sudden requirement to change it to `{ firstName: "Bob", lastName: "Smith" }`. Migrating this change with an API that supports `PATCH` would result in `{ name: "Bob Smith", firstName: "Bob", lastName: "Smith" }` in the database without performing some kind of schema migration - either at the ORM level (`sequelize` migrations, RoR ActiveRecord, etc.), the database itself (`sql-migrate`, `mongo-migrate`, etc.), or in your API endpoint (you'd have to transform any `{ name }` payloads to `{ firstName, lastName }` in order to keep supporting your API). None of those are great solutions, so given that JavaScript has a spread operator (`...`) we only support `PUT` for updating data, giving you the flexibility to change things gracefully, without having to version your entire platform when you do.
     
-### Scalability
+## Scalability
 
 When a service gets too busy, large, or concerned with different things, it might be time to split it into multiple services. You can use [node-service-core](https://github.com/bennyschmidt/node-service-core) to manage multiple HTTP and WS services (see [README.md](https://github.com/bennyschmidt/node-service-core/blob/master/README.md) for instructions). Think of `node-service-core` as the grown-up version of the "`server.js`" mentioned above, operating as the lightweight core of the overall backend application - rather than as a server monolith - orchestrating the different `HTTP` and `WS` components (which can each scale "out", infinitely).
 
