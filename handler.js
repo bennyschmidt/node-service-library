@@ -41,7 +41,9 @@ module.exports = (resource, isWs) => async (req, res, isQuery) => {
       console.log('Service Error:', error);
 
       // Respond with a server error
-      return res.emit('error', { code: 500 });
+      if (res?.emit) {
+        return res.emit('error', { code: 500 });
+      }
     }
   }
 
@@ -79,6 +81,8 @@ module.exports = (resource, isWs) => async (req, res, isQuery) => {
     console.log('Service Error:', error);
 
     // Respond with a server error
-    return res.status(500).end();
+    if (res?.status) {
+      return res.status(500).end();
+    }
   }
 };
