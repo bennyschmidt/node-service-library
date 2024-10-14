@@ -53,6 +53,7 @@ module.exports = (resource, isWs) => async (req, res, isQuery) => {
     const params = isQuery === true ? req.query : req.body;
     const location = req.route.path.replace('*', '');
 
+    params.originalRequest = req;
     method = req.path.replace(location, '');
 
     // Handle bad request error
